@@ -1,9 +1,7 @@
 {
-  "name": "openclaw-dashboard",
   "version": 2,
   "builds": [
-    { "src": "static/.*", "use": "@vercel/static" },
-    { "src": ".*", "use": "@vercel/static-build", "config": { "distDir": "." } }
+    { "src": ".*", "use": "@vercel/static" }
   ],
   "routes": [
     { "handle": "filesystem" },
