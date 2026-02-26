@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpenClaw Dashboard</title>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#58a6ff">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="/icon-192.svg">
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; background: #0d1117; color: #e6edf3; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+    h1 { color: #58a6ff; margin-bottom: 8px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+    .card { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 16px; }
+    .card h2 { margin: 0 0 12px 0; font-size: 16px; color: #79c0ff; border-bottom: 1px solid #30363d; padding-bottom: 6px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { text-align: left; padding: 6px; border-bottom: 1px solid #21262d; }
+    th { color: #8b949e; font-weight: 500; }
+    .value { color: #7ee787; }
+    .warn { color: #d29922; }
+    .bad { color: #ff7b72; }
+    .ok { color: #7ee787; }
+    .muted { color: #8b949e; font-size: 12px; }
+    footer { margin-top: 24px; color: #8b949e; font-size: 12px; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🦾 OpenClaw Dashboard</h1>
+    <div id="last-updated" class="muted">Loading…</div>
+    <!-- PWA Install Button -->
+    <button id="installBtn" style="display:none;position:absolute;top:20px;right:20px;padding:8px 12px;background:#58a6ff;color:#0d1117;border:none;border-radius:6px;cursor:pointer;">Install App</button>
+
+    <div class="grid">
+      <!-- System Overview -->
+      <div class="card">
+        <h2>System Overview</h2>
+        <table id="sys-table"></table>
+      </div>
+
+      <!-- Agent Status -->
+      <div class="card">
+        <h2>Agent Status (last 24h)</h2>
+        <table id="agent-table"></table>
+      </div>
+
+      <!-- Research Library -->
+      <div class="card">
+        <h2>Research Library</h2>
+        <table id="research-table"></table>
+      </div>
+
+      <!-- Recent Commits -->
+      <div class="card">
+        <h2>Recent Commits (by Agent)</h2>
+        <table id="commit-table"></table>
+      </div>
+    </div>
+
+    <footer>Generated locally. Auto-refresh every 60s (if left open).</footer>
+  </div>
+
+  <script>
+    const API_BASE = '/api'; // We'll fetch JSON from a tiny Node/Express wrapper or static files
+
+    // Helper to color value based on threshold
+    function colorize(value, type) {
+      if (type === 'disk') {
+        if (value >= 90) return `<span class="bad">${value}%</span>`;
+        if (value >= 80) return `<span class="warn">${value}%</span>`;
+        return `<span class="ok">${value}%</span>`;
+      }
+      if (type === 'updates') return value > 0 ? `<span class="warn">${value} pending</span>` : `<span class="ok">0</span>`;
+      if (type === 'memory') return value <= 7 ? `<span class="ok">${value}d</span>` : `<span class="warn">${value}d</span>`;
+      return value;
+    }
+
+    // Render functions
+    function renderSystem(data) {
+      const tbody = document.getElementById('sys-table');
+      tbody.innerHTML = `
+        <tr><th>Gateway</th><td><span class="${data.gateway === 'up' ? 'ok' : 'bad'}">${data.gateway}</span></td></tr>
+        <tr><th>Disk</th><td>${colorize(data.disk_percent,'disk')} (${data.disk_free} free)</td></tr>
+        <tr><th>Updates</th><td>${colorize(data.updates,'updates')}</td></tr>
+        <tr><th>Git</th><td><span class="${data.git_clean ? 'ok' : 'warn'}">${data.git_clean ? 'clean' : 'dirty'}</span></td></tr>
+        <tr><th>Memory Index</th><td>${colorize(data.memory_age_days,'memory')}</td></tr>
+        <tr><th>Downloads</th><td>${data.downloads_count} files (${data.downloads_gb} GB)</td></tr>
+      `;
+    }
+
+    function renderAgents(agents) {
+      const tbody = document.getElementById('agent-table');
+      tbody.innerHTML = agents.map(a => `
+        <tr>
+          <td>${a.name}</td>
+          <td><span class="${a.active ? 'ok' : 'bad'}">${a.active ? 'active' : 'idle'}</span></td>
+          <td class="muted">${a.last_run || 'never'}</td>
+        </tr>
+      `).join('');
+    }
+
+    function renderResearch(data) {
+      const tbody = document.getElementById('research-table');
+      tbody.innerHTML = `
+        <tr><td>Total Reports</td><td><strong>${data.total}</strong></td></tr>
+        <tr><td>TTS Coverage</td><td><span class="${data.tts_coverage === '100%' ? 'ok' : 'warn'}">${data.tts_coverage}</span></td></tr>
+        <tr><td>Latest Report</td><td>${data.latest || 'none'}</td></tr>
+        <tr><td>Hub Deployed</td><td><span class="${data.hub_deployed ? 'ok' : 'warn'}">${data.hub_deployed ? 'yes' : 'no'}</span></td></tr>
+      `;
+    }
+
+    function renderCommits(commits) {
+      const tbody = document.getElementById('commit-table');
+      tbody.innerHTML = commits.map(c => `
+        <tr>
+          <td style="width:60px"><span class="muted">${c.agent}</span></td>
+          <td>${c.message}</td>
+          <td class="muted" style="text-align:right">${c.time}</td>
+        </tr>
+      `).join('');
+    }
+
+    // Fetch data
+    async function load() {
+      try {
+        const [sys, agents, research, commits] = await Promise.all([
+          fetch('/api/system').then(r => r.json()),
+          fetch('/api/agents').then(r => r.json()),
+          fetch('/api/research').then(r => r.json()),
+          fetch('/api/commits?limit=8').then(r => r.json())
+        ]);
+        renderSystem(sys);
+        renderAgents(agents);
+        renderResearch(research);
+        renderCommits(commits);
+        document.getElementById('last-updated').textContent = `Last updated: ${new Date().toLocaleTimeString()}`;
+      } catch (e) {
+        console.error('Dashboard load error:', e);
+      }
+    }
+
+    // Auto-refresh
+    setInterval(load, 60000);
+    load();
+  </script>
+</body>
+</html>

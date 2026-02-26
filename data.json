@@ -1,0 +1,108 @@
+{
+  "generated_at": "2026-02-26T09:44:53Z",
+  "system": {
+    "gateway": "up",
+    "disk_percent": 71,
+    "disk_free": "14G",
+    "updates": 0,
+    "git_clean": true,
+    "memory_age_days": 0,
+    "downloads_count": 8,
+    "downloads_gb": "5.7G"
+  },
+  "agents": [
+    {
+      "name": "linkedin-pa-agent",
+      "active": true,
+      "last_run": "2026-02-26 09:17"
+    },
+    {
+      "name": "research-agent",
+      "active": false,
+      "last_run": "never"
+    },
+    {
+      "name": "content-agent",
+      "active": false,
+      "last_run": "never"
+    },
+    {
+      "name": "dev-agent",
+      "active": true,
+      "last_run": "2026-02-26 09:00"
+    },
+    {
+      "name": "supervisor",
+      "active": true,
+      "last_run": "2026-02-26 09:30"
+    },
+    {
+      "name": "agent-manager",
+      "active": true,
+      "last_run": "2026-02-26 08:09"
+    },
+    {
+      "name": "meta-agent",
+      "active": false,
+      "last_run": "2026-02-26 05:16"
+    }
+  ],
+  "research": {
+    "total": 193,
+    "tts_coverage": "100%",
+    "latest": "2026-02-26-edge-ai-tinyml-2026\nnone",
+    "hub_deployed": true
+  },
+  "recent_commits": [
+    {
+      "agent": "content",
+      "message": "LinkedIn PA implementation-decoder analyst‑report for 2026-02-26 0917 (v10 dynamic)",
+      "time": ""
+    },
+    {
+      "agent": "build",
+      "message": "log workspace-builder session 20260226-0910 (push commits, cleanup branches, enforce constraints)",
+      "time": ""
+    },
+    {
+      "agent": "build",
+      "message": "enforce constraints - push commits, cleanup branches, update active-tasks, document session (20260226-0910)",
+      "time": ""
+    },
+    {
+      "agent": "content",
+      "message": "Update daily digest 2026-02-26",
+      "time": ""
+    },
+    {
+      "agent": "dev",
+      "message": "Add heartbeat-state command to view last heartbeat checks",
+      "time": ""
+    },
+    {
+      "agent": "content",
+      "message": "LinkedIn PA comparative-analysis analyst‑report for 2026-02-26 0812 (v10 dynamic)",
+      "time": ""
+    },
+    {
+      "agent": "content",
+      "message": "Update daily digest 2026-02-26",
+      "time": ""
+    },
+    {
+      "agent": "dev",
+      "message": "Fix LinkedIn PA agent timestamp arithmetic for 08/09 hour edge case",
+      "time": ""
+    },
+    {
+      "agent": "content",
+      "message": "LinkedIn PA technical-performance analyst‑report for 2026-02-26 0716 (v10 dynamic)",
+      "time": ""
+    },
+    {
+      "agent": "build",
+      "message": "finalize progress.md with outcome and commit references",
+      "time": ""
+    }
+  ]
+}
