@@ -31,8 +31,8 @@
   <div class="container">
     <h1>🦾 OpenClaw Dashboard</h1>
     <div id="last-updated" class="muted">Loading…</div>
-    <!-- PWA Install Button -->
-    <button id="installBtn" style="display:none;position:absolute;top:20px;right:20px;padding:8px 12px;background:#58a6ff;color:#0d1117;border:none;border-radius:6px;cursor:pointer;">Install App</button>
+    <!-- PWA Install Button (always visible if not installed) -->
+    <button id="installBtn" style="position:absolute;top:20px;right:20px;padding:8px 12px;background:#58a6ff;color:#0d1117;border:none;border-radius:6px;cursor:pointer;">Install App</button>
 
     <div class="grid">
       <!-- System Overview -->
@@ -122,6 +122,35 @@
         </tr>
       `).join('');
     }
+
+    // PWA install handling — always show button with manual fallback
+    let deferredPrompt;
+    const installBtn = document.getElementById('installBtn');
+
+    // Hide if already installed (standalone mode)
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      installBtn.style.display = 'none';
+    } else {
+      installBtn.style.display = 'block';
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      // Ensure button is visible
+      installBtn.style.display = 'block';
+    });
+
+    installBtn.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log('Install outcome:', outcome);
+        deferredPrompt = null;
+      } else {
+        alert('To install this app on Android:\n1. Tap Chrome menu (⋮)\n2. Select "Add to Home screen"\n\nOr use your browser’s install option if available.');
+      }
+    });
 
     // Fetch data
     async function load() {
