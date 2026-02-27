@@ -287,15 +287,19 @@
     async function loadData() {
       try {
         const bust = Date.now();
-        const res = await fetch(`/data.json?bust=${bust}`, { cache: 'no-store' });
+        const url = `/data.json?bust=${bust}`;
+        console.log('Fetching:', url);
+        const res = await fetch(url, { cache: 'no-store' });
+        console.log('Response status:', res.status);
         if (!res.ok) throw new Error('data.json fetch failed: ' + res.status);
         const text = await res.text();
+        console.log('Response length:', text.length);
         let data;
         try {
           data = JSON.parse(text);
         } catch (e) {
-          console.error('JSON parse error:', e, 'response:', text.slice(0,200));
-          document.getElementById('sys-table').innerHTML = '<tr><td colspan="2">Data parse error. Check console.</td></tr>';
+          console.error('JSON parse error:', e, 'snippet:', text.slice(0,200));
+          renderError('Data parse error. Check console.');
           return;
         }
         lastData = data;
@@ -311,9 +315,13 @@
         localStorage.setItem('clawdash_lastData', JSON.stringify(data));
       } catch (e) {
         console.error('Dashboard load error:', e);
-        const msg = `Load error: ${e.message}`;
-        document.getElementById('sys-table').innerHTML = `<tr><td colspan="2">${msg}</td></tr>`;
+        renderError(`Load error: ${e.message}`);
       }
+    }
+
+    function renderError(msg) {
+      document.getElementById('sys-table').innerHTML = `<tr><td colspan="2" class="bad">${msg}</td></tr>`;
+      document.getElementById('last-updated').textContent = 'Error — check console';
     }
 
     function renderLogs(lines) {

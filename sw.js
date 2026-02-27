@@ -33,9 +33,9 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Network-first for API data, cache-first for assets
   const url = event.request.url;
-  if (url.includes('/api/') || url.includes('/data.json')) {
+  // Network-first for data, no-cache for HTML, cache-first for static assets
+  if (url.includes('/data.json') || url.endsWith('.html')) {
     event.respondWith(
       fetch(event.request).catch(() => {
         return caches.match(event.request);
