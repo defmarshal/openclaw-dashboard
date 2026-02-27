@@ -283,19 +283,22 @@
     });
 
     // Main load
+    let lastData = null;
     async function loadData() {
       try {
         const bust = Date.now();
         const res = await fetch(`/data.json?bust=${bust}`, { cache: 'no-store' });
-        if (!res.ok) throw new Error('data.json fetch failed');
+        if (!res.ok) throw new Error('data.json fetch failed: ' + res.status);
         const text = await res.text();
         let data;
         try {
           data = JSON.parse(text);
         } catch (e) {
           console.error('JSON parse error:', e, 'response:', text.slice(0,200));
-          throw e;
+          document.getElementById('sys-table').innerHTML = '<tr><td colspan="2">Data parse error. Check console.</td></tr>';
+          return;
         }
+        lastData = data;
 
         renderSystem(data.system);
         renderAgents(data.agents);
@@ -308,6 +311,8 @@
         localStorage.setItem('clawdash_lastData', JSON.stringify(data));
       } catch (e) {
         console.error('Dashboard load error:', e);
+        const msg = `Load error: ${e.message}`;
+        document.getElementById('sys-table').innerHTML = `<tr><td colspan="2">${msg}</td></tr>`;
       }
     }
 
