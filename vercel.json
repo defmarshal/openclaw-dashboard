@@ -12,7 +12,13 @@
       }
     },
     {
-      "src": "/sw.js",
+      "src": "/sw-v2.js",
+      "headers": {
+        "Cache-Control": "no-cache, no-store, must-revalidate, max-age=0"
+      }
+    },
+    {
+      "src": "/manifest.json",
       "headers": {
         "Cache-Control": "no-cache, no-store, must-revalidate, max-age=0"
       }
