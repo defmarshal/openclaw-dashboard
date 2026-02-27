@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>OpenClaw Dashboard</title>
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#58a6ff">
@@ -282,7 +285,8 @@
     // Main load
     async function loadData() {
       try {
-        const res = await fetch('/data.json');
+        const bust = Date.now();
+        const res = await fetch(`/data.json?bust=${bust}`, { cache: 'no-store' });
         if (!res.ok) throw new Error('data.json fetch failed');
         const data = await res.json();
 
