@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-02-27T00:22:35Z",
+  "generated_at": "2026-02-27T02:05:11Z",
   "system": {
     "gateway": "up",
     "disk_percent": 72,
@@ -22,7 +22,7 @@
     {
       "name": "linkedin-pa-agent",
       "active": true,
-      "last_run": "2026-02-27 00:09"
+      "last_run": "2026-02-27 01:19"
     },
     {
       "name": "research-agent",
@@ -36,18 +36,18 @@
     },
     {
       "name": "dev-agent",
-      "active": false,
-      "last_run": "2026-02-26 15:00"
+      "active": true,
+      "last_run": "2026-02-27 02:00"
     },
     {
       "name": "supervisor",
       "active": true,
-      "last_run": "2026-02-27 00:01"
+      "last_run": "2026-02-27 01:30"
     },
     {
       "name": "agent-manager",
       "active": true,
-      "last_run": "2026-02-26 23:30"
+      "last_run": "2026-02-27 00:30"
     },
     {
       "name": "meta-agent",
@@ -56,60 +56,60 @@
     }
   ],
   "research": {
-    "total": 194,
-    "tts_coverage": "99%",
-    "latest": "INDEX\nnone",
+    "total": 195,
+    "tts_coverage": "100%",
+    "latest": "INDEX",
     "hub_deployed": true
   },
   "recent_commits": [
     {
       "agent": "chore",
-      "message": "enhance dashboard data generator — add disk_history and logs arrays for new UI features",
+      "message": "update daily log and progress (auto-commit from workspace-builder)",
       "time": ""
     },
     {
       "agent": "content",
-      "message": "LinkedIn PA market-positioning analyst‑report for 2026-02-27 0008 (v10 dynamic)",
+      "message": "LinkedIn PA technical-performance analyst‑report for 2026-02-27 0119 (v10 dynamic)",
+      "time": ""
+    },
+    {
+      "agent": "build",
+      "message": "prune oldest completed workspace-builder entry to keep active-tasks <2KB",
+      "time": ""
+    },
+    {
+      "agent": "build",
+      "message": "mark workspace-builder session validated (2026-02-27 01:09 UTC)",
+      "time": ""
+    },
+    {
+      "agent": "build",
+      "message": "mark workspace-builder session validated (2026-02-27 01:09 UTC)",
+      "time": ""
+    },
+    {
+      "agent": "build",
+      "message": "update research-hub index timestamp (workspace-builder session 20260227-0109)",
       "time": ""
     },
     {
       "agent": "research",
-      "message": "Spring 2026 anime season trends — lineup, streaming, highlights",
+      "message": "LEO satellite internet constellations 2026 — Starlink, OneWeb, Kuiper status, pricing, competition",
       "time": ""
     },
     {
       "agent": "content",
-      "message": "Update daily digest 2026-02-26 (agent run)",
+      "message": "Update daily digest 2026-02-27 (agent run)",
       "time": ""
     },
     {
-      "agent": "build",
-      "message": "auto-commit from agent-manager (2026-02-26)",
+      "agent": "dev",
+      "message": "ignore dashboard subproject in main workspace",
       "time": ""
     },
     {
-      "agent": "content",
-      "message": "LinkedIn PA developer-tips analyst‑report for 2026-02-26 2309 (v10 dynamic)",
-      "time": ""
-    },
-    {
-      "agent": "build",
-      "message": "mark workspace-builder session validated (2026-02-26 23:00 UTC)",
-      "time": ""
-    },
-    {
-      "agent": "build",
-      "message": "workspace-builder session 20260226-2300 - commit dashboard updates, content index regeneration, add .gitignore, create planning docs",
-      "time": ""
-    },
-    {
-      "agent": "content",
-      "message": "LinkedIn PA roadmap-brief analyst‑report for 2026-02-26 2203 (v10 dynamic)",
-      "time": ""
-    },
-    {
-      "agent": "build",
-      "message": "auto-commit from agent-manager (2026-02-26)",
+      "agent": "dev",
+      "message": "workspace hygiene — remove dashboard from main repo tracking, ignore subproject, clean temp file",
       "time": ""
     }
   ],
