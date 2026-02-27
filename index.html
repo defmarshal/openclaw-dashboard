@@ -288,14 +288,24 @@
         const bust = Date.now();
         const res = await fetch(`/data.json?bust=${bust}`, { cache: 'no-store' });
         if (!res.ok) throw new Error('data.json fetch failed');
-        const data = await res.json();
+        const text = await res.text();
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch (e) {
+          console.error('JSON parse error:', e, 'response:', text.slice(0,200));
+          throw e;
+        }
 
         renderSystem(data.system);
         renderAgents(data.agents);
         renderResearch(data.research);
-        renderCommits(data.recent_commits);
+        renderCommits(data.recent_commits || []);
         renderLogs(data.logs || []);
         document.getElementById('last-updated').textContent = `Last updated: ${new Date().toLocaleTimeString()}`;
+
+        // Save snapshot for chat
+        localStorage.setItem('clawdash_lastData', JSON.stringify(data));
       } catch (e) {
         console.error('Dashboard load error:', e);
       }
