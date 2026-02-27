@@ -187,19 +187,20 @@
 
     function renderSystem(data) {
       const tbody = document.getElementById('sys-table');
+      if (!tbody) return;
       tbody.innerHTML = `
-        <tr><th>Gateway</th><td><span class="${data.gateway === 'up' ? 'ok' : 'bad'}">${data.gateway}</span></td></tr>
-        <tr><th>Disk</th><td>${colorize(data.disk_percent,'disk')} (${data.disk_free} free)</td></tr>
-        <tr><th>Updates</th><td>${colorize(data.updates,'updates')}</td></tr>
-        <tr><th>Git</th><td><span class="${data.git_clean ? 'ok' : 'warn'}">${data.git_clean ? 'clean' : 'dirty'}</span></td></tr>
-        <tr><th>Memory Index</th><td>${colorize(data.memory_age_days,'memory')}</td></tr>
-        <tr><th>Downloads</th><td>${data.downloads_count} files (${data.downloads_gb} GB)</td></tr>
+        <tr><th>Gateway</th><td><span class="${data.system?.gateway === 'up' ? 'ok' : 'bad'}">${data.system?.gateway || 'unknown'}</span></td></tr>
+        <tr><th>Disk</th><td>${colorize(data.system?.disk_percent ?? 0, 'disk')} (${data.system?.disk_free || '?'} free)</td></tr>
+        <tr><th>Updates</th><td>${colorize(data.system?.updates ?? 0, 'updates')}</td></tr>
+        <tr><th>Git</th><td><span class="${data.system?.git_clean ? 'ok' : 'warn'}">${data.system?.git_clean ? 'clean' : 'dirty'}</span></td></tr>
+        <tr><th>Memory Index</th><td>${colorize(data.system?.memory_age_days ?? 0, 'memory')}</td></tr>
+        <tr><th>Downloads</th><td>${data.system?.downloads_count || 0} files (${data.system?.downloads_gb || 0} GB)</td></tr>
       `;
-      // Update history
-      diskHistory.push(data.disk_percent);
+      diskHistory.push(data.system?.disk_percent ?? 0);
       if (diskHistory.length > MAX_HISTORY) diskHistory.shift();
       renderDiskChart();
-      document.getElementById('disk-status').textContent = `${data.disk_percent}%`;
+      const statusEl = document.getElementById('disk-status');
+      if (statusEl) statusEl.textContent = `${data.system?.disk_percent || 0}%`;
     }
 
     function renderDiskChart() {
@@ -217,6 +218,7 @@
 
     function renderAgents(agents) {
       const tbody = document.querySelector('#agent-table tbody');
+      if (!tbody) return;
       tbody.innerHTML = agents.map(a => {
         const uptime = a.active ? '>1h' : 'idle';
         return `
@@ -232,6 +234,7 @@
 
     function renderResearch(data) {
       const tbody = document.getElementById('research-table');
+      if (!tbody) return;
       tbody.innerHTML = `
         <tr><td>Total Reports</td><td><strong>${data.total}</strong></td></tr>
         <tr><td>TTS Coverage</td><td><span class="${data.tts_coverage === '100%' ? 'ok' : 'warn'}">${data.tts_coverage}</span></td></tr>
@@ -242,6 +245,7 @@
 
     function renderCommits(commits) {
       const tbody = document.getElementById('commit-table');
+      if (!tbody) return;
       tbody.innerHTML = commits.map(c => `
         <tr>
           <td style="width:60px"><span class="muted">${c.agent}</span></td>
@@ -327,6 +331,7 @@
 
     function renderLogs(lines) {
       const box = document.getElementById('log-box');
+      if (!box) return;
       if (!lines || lines.length === 0) {
         box.textContent = 'No logs available.';
         return;
@@ -429,10 +434,10 @@
       } catch (e) {}
     };
 
-    // Initial
-    loadChat();
-
-    // Initial
-    loadData();
+    // Initial after DOM ready
+    document.addEventListener('DOMContentLoaded', () => {
+      loadChat();
+      loadData();
+    });
 </body>
 </html>
