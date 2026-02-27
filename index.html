@@ -52,6 +52,11 @@
     #installBtn:hover { opacity: 0.9; }
     .chart { width: 100%; height: 60px; margin-top: 8px; }
     .log-box { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 8px; font-family: monospace; font-size: 11px; height: 150px; overflow-y: auto; white-space: pre-wrap; }
+    #chat-box { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 8px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 13px; height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
+    .msg { max-width: 80%; padding: 6px 10px; border-radius: 12px; line-height: 1.4; }
+    .msg.user { align-self: flex-end; background: var(--accent); color: var(--bg); }
+    .msg.assistant { align-self: flex-start; background: var(--card); border: 1px solid var(--border); color: var(--text); }
+    .timestamp { font-size: 10px; opacity: 0.7; margin-bottom: 2px; }
     @media (max-width: 600px) {
       .topbar { flex-direction: column; align-items: stretch; }
       .controls { justify-content: center; }
@@ -110,6 +115,17 @@
       <div class="card" style="grid-column: 1 / -1;">
         <h2>Recent Logs (tail) <button id="refreshLogs" style="font-size:11px">Refresh</button></h2>
         <div id="log-box" class="log-box">Loading…</div>
+      </div>
+
+      <!-- Chat -->
+      <div class="card" style="grid-column: 1 / -1;">
+        <h2>Chat (local) <button id="clearChat" style="font-size:11px">Clear</button></h2>
+        <div id="chat-box" class="log-box" style="height: 200px; display:flex; flex-direction: column; gap: 6px;"></div>
+        <div style="display:flex; gap: 8px; margin-top: 8px;">
+          <input id="chatInput" type="text" placeholder="Type a message…" style="flex:1; background:var(--bg); color:var(--text); border:1px solid var(--border); border-radius:6px; padding: 6px;" />
+          <button id="sendChat" style="padding: 6px 12px;">Send</button>
+        </div>
+        <div class="muted" style="font-size:11px; margin-top:4px;">Commands: status, help, export. History stored locally.</div>
       </div>
     </div>
 
@@ -292,6 +308,95 @@
 
     // Refresh logs button (just re-run loadData)
     document.getElementById('refreshLogs').addEventListener('click', loadData);
+
+    // --- Chat feature (local) ---
+    const CHAT_STORAGE_KEY = 'clawdash_chat';
+    const chatBox = document.getElementById('chat-box');
+    const chatInput = document.getElementById('chatInput');
+    const sendChatBtn = document.getElementById('sendChat');
+    const clearChatBtn = document.getElementById('clearChat');
+
+    function loadChat() {
+      const raw = localStorage.getItem(CHAT_STORAGE_KEY);
+      const messages = raw ? JSON.parse(raw) : [];
+      renderChat(messages);
+    }
+
+    function saveChat(messages) {
+      localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages));
+    }
+
+    function renderChat(messages) {
+      chatBox.innerHTML = '';
+      messages.forEach(m => {
+        const div = document.createElement('div');
+        div.className = `msg ${m.sender}`;
+        const time = new Date(m.ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        div.innerHTML = `<div class="timestamp">${time}</div>${escapeHtml(m.text)}`;
+        chatBox.appendChild(div);
+      });
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+    }
+
+    function addMessage(sender, text) {
+      const raw = localStorage.getItem(CHAT_STORAGE_KEY);
+      const messages = raw ? JSON.parse(raw) : [];
+      messages.push({ sender, text, ts: Date.now() });
+      saveChat(messages);
+      renderChat(messages);
+    }
+
+    function processCommand(cmd) {
+      const data = JSON.parse(localStorage.getItem('clawdash_lastData') || '{}');
+      switch (cmd.toLowerCase()) {
+        case 'status':
+          return `System: ${data.system?.gateway || 'unknown'} | Disk: ${data.system?.disk_percent || '?'}% | Git: ${data.system?.git_clean ? 'clean' : 'dirty'} | Agents: ${data.agents?.filter(a=>a.active).length || 0} active`;
+        case 'help':
+          return 'Commands: status, help, export. You can also ask about system state.';
+        case 'export':
+          return 'Click the Export JSON button to download full dashboard data.';
+        default:
+          return `I heard you say: "${cmd}". I'm a simple client-side assistant. Use /status or /help.`;
+      }
+    }
+
+    sendChatBtn.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keypress', e => { if (e.key === 'Enter') sendMessage(); });
+    clearChatBtn.addEventListener('click', () => { localStorage.removeItem(CHAT_STORAGE_KEY); renderChat([]); });
+
+    function sendMessage() {
+      const text = chatInput.value.trim();
+      if (!text) return;
+      addMessage('user', text);
+      chatInput.value = '';
+
+      // Respond based on commands or echo last known data
+      setTimeout(() => {
+        const response = processCommand(text);
+        addMessage('assistant', response);
+      }, 300);
+    }
+
+    // Store last data snapshot for chat context
+    const originalLoadData = loadData;
+    loadData = async function() {
+      await originalLoadData();
+      // Save a copy for chat context
+      try {
+        const res = await fetch('/data.json');
+        if (res.ok) {
+          const data = await res.json();
+          localStorage.setItem('clawdash_lastData', JSON.stringify(data));
+        }
+      } catch (e) {}
+    };
+
+    // Initial
+    loadChat();
 
     // Initial
     loadData();
