@@ -1,28 +1,28 @@
 {
-  "generated_at": "2026-02-27T02:05:11Z",
+  "generated_at": "2026-02-27T08:02:11Z",
   "system": {
     "gateway": "up",
-    "disk_percent": 72,
-    "disk_free": "13G",
+    "disk_percent": 71,
+    "disk_free": "14G",
     "updates": 0,
     "git_clean": false,
     "memory_age_days": 0,
     "downloads_count": 8,
     "downloads_gb": "5.7G",
     "disk_history": [
+      71,
+      70,
       72,
       71,
-      73,
-      72,
-      70,
-      74
+      69,
+      73
     ]
   },
   "agents": [
     {
       "name": "linkedin-pa-agent",
       "active": true,
-      "last_run": "2026-02-27 01:19"
+      "last_run": "2026-02-27 07:11"
     },
     {
       "name": "research-agent",
@@ -37,79 +37,79 @@
     {
       "name": "dev-agent",
       "active": true,
-      "last_run": "2026-02-27 02:00"
+      "last_run": "2026-02-27 08:01"
     },
     {
       "name": "supervisor",
       "active": true,
-      "last_run": "2026-02-27 01:30"
+      "last_run": "2026-02-27 07:08"
     },
     {
       "name": "agent-manager",
-      "active": true,
-      "last_run": "2026-02-27 00:30"
+      "active": false,
+      "last_run": "2026-02-27 03:30"
     },
     {
       "name": "meta-agent",
-      "active": true,
+      "active": false,
       "last_run": "2026-02-27 00:06"
     }
   ],
   "research": {
-    "total": 195,
+    "total": 201,
     "tts_coverage": "100%",
-    "latest": "INDEX",
+    "latest": "INDEX\nnone",
     "hub_deployed": true
   },
   "recent_commits": [
     {
-      "agent": "chore",
-      "message": "update daily log and progress (auto-commit from workspace-builder)",
+      "agent": "build",
+      "message": "mark workspace-builder session validated (2026-02-27 07:09 UTC) - push pending commits, enforce constraints, update active-tasks",
       "time": ""
     },
     {
       "agent": "content",
-      "message": "LinkedIn PA technical-performance analyst‑report for 2026-02-27 0119 (v10 dynamic)",
+      "message": "LinkedIn PA technical-performance analyst‑report for 2026-02-27 0711 (v10 dynamic)",
       "time": ""
     },
     {
       "agent": "build",
-      "message": "prune oldest completed workspace-builder entry to keep active-tasks <2KB",
-      "time": ""
-    },
-    {
-      "agent": "build",
-      "message": "mark workspace-builder session validated (2026-02-27 01:09 UTC)",
-      "time": ""
-    },
-    {
-      "agent": "build",
-      "message": "mark workspace-builder session validated (2026-02-27 01:09 UTC)",
-      "time": ""
-    },
-    {
-      "agent": "build",
-      "message": "update research-hub index timestamp (workspace-builder session 20260227-0109)",
+      "message": "update research-hub index timestamp (workspace-builder session 20260227-0709)",
       "time": ""
     },
     {
       "agent": "research",
-      "message": "LEO satellite internet constellations 2026 — Starlink, OneWeb, Kuiper status, pricing, competition",
+      "message": "Space launch economics & market 2026 — cost per kg, reusability, rideshare boom",
+      "time": ""
+    },
+    {
+      "agent": "dev",
+      "message": "add quick vercel-status to check dashboard deployment health",
+      "time": ""
+    },
+    {
+      "agent": "log",
+      "message": "document notifier-triggered maintenance and fix (2026-02-27)",
+      "time": ""
+    },
+    {
+      "agent": "build",
+      "message": "update research-hub index timestamp (notifier-triggered cleanup 2026-02-27)",
       "time": ""
     },
     {
       "agent": "content",
-      "message": "Update daily digest 2026-02-27 (agent run)",
+      "message": "LinkedIn PA market-positioning analyst‑report for 2026-02-27 0618 (v10 dynamic)",
+      "time": ""
+    },
+    {
+      "agent": "research",
+      "message": "Fusion energy breakthroughs 2026 — ITER, SPARC, Helion, TAE, ICF, net gain timelines",
       "time": ""
     },
     {
       "agent": "dev",
-      "message": "ignore dashboard subproject in main workspace",
-      "time": ""
-    },
-    {
-      "agent": "dev",
-      "message": "workspace hygiene — remove dashboard from main repo tracking, ignore subproject, clean temp file",
+      "message": "add quick today utility to list files modified since midnight UTC",
       "time": ""
     }
   ],
