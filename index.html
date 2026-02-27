@@ -10,41 +10,88 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="apple-touch-icon" href="/icon-192.svg">
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; background: #0d1117; color: #e6edf3; }
+    :root {
+      --bg: #0d1117;
+      --card: #161b22;
+      --border: #30363d;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --accent: #58a6ff;
+      --ok: #7ee787;
+      --warn: #d29922;
+      --bad: #ff7b72;
+    }
+    .light {
+      --bg: #ffffff;
+      --card: #f6f8fa;
+      --border: #d0d7de;
+      --text: #1f2328;
+      --muted: #6e7781;
+      --accent: #0969da;
+    }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; background: var(--bg); color: var(--text); transition: background .2s, color .2s; }
     .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-    h1 { color: #58a6ff; margin-bottom: 8px; }
+    h1 { color: var(--accent); margin-bottom: 8px; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
+    .controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
-    .card { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 16px; }
-    .card h2 { margin: 0 0 12px 0; font-size: 16px; color: #79c0ff; border-bottom: 1px solid #30363d; padding-bottom: 6px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+    .card h2 { margin: 0 0 12px 0; font-size: 16px; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
     table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    th, td { text-align: left; padding: 6px; border-bottom: 1px solid #21262d; }
-    th { color: #8b949e; font-weight: 500; }
-    .value { color: #7ee787; }
-    .warn { color: #d29922; }
-    .bad { color: #ff7b72; }
-    .ok { color: #7ee787; }
-    .muted { color: #8b949e; font-size: 12px; }
-    footer { margin-top: 24px; color: #8b949e; font-size: 12px; text-align: center; }
+    th, td { text-align: left; padding: 6px; border-bottom: 1px solid var(--border); }
+    th { color: var(--muted); font-weight: 500; }
+    .value { color: var(--ok); }
+    .warn { color: var(--warn); }
+    .bad { color: var(--bad); }
+    .ok { color: var(--ok); }
+    .muted { color: var(--muted); font-size: 12px; }
+    footer { margin-top: 24px; color: var(--muted); font-size: 12px; text-align: center; }
+    button, select { background: var(--card); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 4px 8px; cursor: pointer; }
+    button:hover { background: var(--border); }
+    #installBtn { background: var(--accent); color: var(--bg); border: none; }
+    #installBtn:hover { opacity: 0.9; }
+    .chart { width: 100%; height: 60px; margin-top: 8px; }
+    .log-box { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 8px; font-family: monospace; font-size: 11px; height: 150px; overflow-y: auto; white-space: pre-wrap; }
+    @media (max-width: 600px) {
+      .topbar { flex-direction: column; align-items: stretch; }
+      .controls { justify-content: center; }
+      #installBtn { position: static; margin: 8px auto; display: block; }
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>🦾 OpenClaw Dashboard</h1>
+    <div class="topbar">
+      <h1>🦾 OpenClaw Dashboard</h1>
+      <div class="controls">
+        <button id="themeToggle">🌓 Theme</button>
+        <select id="refreshInterval">
+          <option value="30000">30s</option>
+          <option value="60000" selected>60s</option>
+          <option value="300000">5m</option>
+          <option value="0">Off</option>
+        </select>
+        <button id="exportBtn">📥 Export JSON</button>
+        <button id="installBtn" style="display:none;">Install App</button>
+      </div>
+    </div>
     <div id="last-updated" class="muted">Loading…</div>
-    <!-- PWA Install Button (always visible if not installed) -->
-    <button id="installBtn" style="position:absolute;top:20px;right:20px;padding:8px 12px;background:#58a6ff;color:#0d1117;border:none;border-radius:6px;cursor:pointer;">Install App</button>
 
     <div class="grid">
       <!-- System Overview -->
       <div class="card">
-        <h2>System Overview</h2>
+        <h2>System Overview <span class="muted" id="disk-status"></span></h2>
         <table id="sys-table"></table>
+        <svg id="disk-chart-svg" class="chart" viewBox="0 0 100 60" preserveAspectRatio="none"></svg>
       </div>
 
       <!-- Agent Status -->
       <div class="card">
-        <h2>Agent Status (last 24h)</h2>
-        <table id="agent-table"></table>
+        <h2>Agent Status</h2>
+        <table id="agent-table">
+          <thead><tr><th>Agent</th><th>Status</th><th>Uptime</th><th>Last Run</th></tr></thead>
+          <tbody></tbody>
+        </table>
       </div>
 
       <!-- Research Library -->
@@ -58,27 +105,66 @@
         <h2>Recent Commits (by Agent)</h2>
         <table id="commit-table"></table>
       </div>
+
+      <!-- Recent Logs -->
+      <div class="card" style="grid-column: 1 / -1;">
+        <h2>Recent Logs (tail) <button id="refreshLogs" style="font-size:11px">Refresh</button></h2>
+        <div id="log-box" class="log-box">Loading…</div>
+      </div>
     </div>
 
-    <footer>Generated locally. Auto-refresh every 60s (if left open).</footer>
+    <footer>Generated locally. Auto-refresh configurable.</footer>
   </div>
 
   <script>
-    const API_BASE = '/api'; // We'll fetch JSON from a tiny Node/Express wrapper or static files
+    const API_BASE = '/api';
 
-    // Helper to color value based on threshold
+    // Theme
+    const themeToggle = document.getElementById('themeToggle');
+    const currentTheme = localStorage.getItem('theme');
+    if (currentTheme === 'light') document.body.classList.add('light');
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      localStorage.setItem('theme', document.body.classList.contains('light') ? 'light' : 'dark');
+    });
+
+    // Refresh interval
+    const refreshSelect = document.getElementById('refreshInterval');
+    let refreshTimer = null;
+    function setRefresh(ms) {
+      if (refreshTimer) clearInterval(refreshTimer);
+      if (ms > 0) refreshTimer = setInterval(loadData, ms);
+    }
+    refreshSelect.value = localStorage.getItem('refreshMs') || '60000';
+    setRefresh(parseInt(refreshSelect.value));
+    refreshSelect.addEventListener('change', () => {
+      const ms = parseInt(refreshSelect.value);
+      localStorage.setItem('refreshMs', ms);
+      setRefresh(ms);
+    });
+
+    // PWA install
+    let deferredPrompt;
+    const installBtn = document.getElementById('installBtn');
+    if (!window.matchMedia('(display-mode: standalone)').matches) installBtn.style.display = 'block';
+    window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; installBtn.style.display = 'block'; });
+    installBtn.addEventListener('click', async () => {
+      if (deferredPrompt) { deferredPrompt.prompt(); const { outcome } = await deferredPrompt.userChoice; deferredPrompt = null; installBtn.style.display = 'none'; }
+      else alert('To install: use your browser’s install option or Chrome menu → Add to Home screen.');
+    });
+
+    // Colorize
     function colorize(value, type) {
-      if (type === 'disk') {
-        if (value >= 90) return `<span class="bad">${value}%</span>`;
-        if (value >= 80) return `<span class="warn">${value}%</span>`;
-        return `<span class="ok">${value}%</span>`;
-      }
+      if (type === 'disk') { if (value >= 90) return `<span class="bad">${value}%</span>`; if (value >= 80) return `<span class="warn">${value}%</span>`; return `<span class="ok">${value}%</span>`; }
       if (type === 'updates') return value > 0 ? `<span class="warn">${value} pending</span>` : `<span class="ok">0</span>`;
       if (type === 'memory') return value <= 7 ? `<span class="ok">${value}d</span>` : `<span class="warn">${value}d</span>`;
       return value;
     }
 
-    // Render functions
+    // Data history for chart
+    let diskHistory = [];
+    const MAX_HISTORY = 50;
+
     function renderSystem(data) {
       const tbody = document.getElementById('sys-table');
       tbody.innerHTML = `
@@ -89,17 +175,39 @@
         <tr><th>Memory Index</th><td>${colorize(data.memory_age_days,'memory')}</td></tr>
         <tr><th>Downloads</th><td>${data.downloads_count} files (${data.downloads_gb} GB)</td></tr>
       `;
+      // Update history
+      diskHistory.push(data.disk_percent);
+      if (diskHistory.length > MAX_HISTORY) diskHistory.shift();
+      renderDiskChart();
+      document.getElementById('disk-status').textContent = `${data.disk_percent}%`;
+    }
+
+    function renderDiskChart() {
+      const svg = document.getElementById('disk-chart-svg');
+      if (diskHistory.length < 2) { svg.innerHTML = ''; return; }
+      const w = 100, h = 60;
+      const min = 0, max = 100;
+      const points = diskHistory.map((v, i) => {
+        const x = (i / (diskHistory.length - 1)) * w;
+        const y = h - ((v - min) / (max - min)) * h;
+        return `${x},${y}`;
+      }).join(' ');
+      svg.innerHTML = `<polyline fill="none" stroke="var(--accent)" stroke-width="1.5" points="${points}" />`;
     }
 
     function renderAgents(agents) {
-      const tbody = document.getElementById('agent-table');
-      tbody.innerHTML = agents.map(a => `
-        <tr>
-          <td>${a.name}</td>
-          <td><span class="${a.active ? 'ok' : 'bad'}">${a.active ? 'active' : 'idle'}</span></td>
-          <td class="muted">${a.last_run || 'never'}</td>
-        </tr>
-      `).join('');
+      const tbody = document.querySelector('#agent-table tbody');
+      tbody.innerHTML = agents.map(a => {
+        const uptime = a.active ? '>1h' : 'idle';
+        return `
+          <tr>
+            <td>${a.name}</td>
+            <td><span class="${a.active ? 'ok' : 'bad'}">${a.active ? 'active' : 'idle'}</span></td>
+            <td class="muted">${uptime}</td>
+            <td class="muted">${a.last_run || '—'}</td>
+          </tr>
+        `;
+      }).join('');
     }
 
     function renderResearch(data) {
@@ -123,57 +231,69 @@
       `).join('');
     }
 
-    // PWA install handling — always show button with manual fallback
-    let deferredPrompt;
-    const installBtn = document.getElementById('installBtn');
-
-    // Hide if already installed (standalone mode)
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-      installBtn.style.display = 'none';
-    } else {
-      installBtn.style.display = 'block';
-    }
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      // Ensure button is visible
-      installBtn.style.display = 'block';
-    });
-
-    installBtn.addEventListener('click', async () => {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        console.log('Install outcome:', outcome);
-        deferredPrompt = null;
-      } else {
-        alert('To install this app on Android:\n1. Tap Chrome menu (⋮)\n2. Select "Add to Home screen"\n\nOr use your browser’s install option if available.');
+    // Logs fetch (tail last 50 lines)
+    async function loadLogs() {
+      try {
+        const res = await fetch('/api/logs?limit=50');
+        if (!res.ok) throw new Error('logs not available');
+        const data = await res.text();
+        document.getElementById('log-box').textContent = data;
+      } catch (e) {
+        document.getElementById('log-box').textContent = 'Logs unavailable (requires server API)';
       }
-    });
+    }
+    document.getElementById('refreshLogs').addEventListener('click', loadLogs);
 
-    // Fetch data
-    async function load() {
+    // Export data
+    document.getElementById('exportBtn').addEventListener('click', async () => {
       try {
         const [sys, agents, research, commits] = await Promise.all([
           fetch('/api/system').then(r => r.json()),
           fetch('/api/agents').then(r => r.json()),
           fetch('/api/research').then(r => r.json()),
-          fetch('/api/commits?limit=8').then(r => r.json())
+          fetch('/api/commits?limit=50').then(r => r.json())
         ]);
-        renderSystem(sys);
-        renderAgents(agents);
-        renderResearch(research);
-        renderCommits(commits);
+        const blob = new Blob([JSON.stringify({ sys, agents, research, commits }, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `clawdash-${new Date().toISOString().slice(0,10)}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+      } catch (e) { alert('Export failed: ' + e.message); }
+    });
+
+    // Main load
+    async function loadData() {
+      try {
+        const res = await fetch('/data.json');
+        if (!res.ok) throw new Error('data.json fetch failed');
+        const data = await res.json();
+
+        renderSystem(data.system);
+        renderAgents(data.agents);
+        renderResearch(data.research);
+        renderCommits(data.recent_commits);
+        renderLogs(data.logs || []);
         document.getElementById('last-updated').textContent = `Last updated: ${new Date().toLocaleTimeString()}`;
       } catch (e) {
         console.error('Dashboard load error:', e);
       }
     }
 
-    // Auto-refresh
-    setInterval(load, 60000);
-    load();
-  </script>
+    function renderLogs(lines) {
+      const box = document.getElementById('log-box');
+      if (!lines || lines.length === 0) {
+        box.textContent = 'No logs available.';
+        return;
+      }
+      box.textContent = lines.slice(-50).join('\n');
+    }
+
+    // Refresh logs button (just re-run loadData)
+    document.getElementById('refreshLogs').addEventListener('click', loadData);
+
+    // Initial
+    loadData();
 </body>
 </html>
