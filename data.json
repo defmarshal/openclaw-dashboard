@@ -1,20 +1,28 @@
 {
-  "generated_at": "2026-02-26T09:44:53Z",
+  "generated_at": "2026-02-27T00:22:35Z",
   "system": {
     "gateway": "up",
-    "disk_percent": 71,
-    "disk_free": "14G",
+    "disk_percent": 72,
+    "disk_free": "13G",
     "updates": 0,
-    "git_clean": true,
+    "git_clean": false,
     "memory_age_days": 0,
     "downloads_count": 8,
-    "downloads_gb": "5.7G"
+    "downloads_gb": "5.7G",
+    "disk_history": [
+      72,
+      71,
+      73,
+      72,
+      70,
+      74
+    ]
   },
   "agents": [
     {
       "name": "linkedin-pa-agent",
       "active": true,
-      "last_run": "2026-02-26 09:17"
+      "last_run": "2026-02-27 00:09"
     },
     {
       "name": "research-agent",
@@ -28,81 +36,133 @@
     },
     {
       "name": "dev-agent",
-      "active": true,
-      "last_run": "2026-02-26 09:00"
+      "active": false,
+      "last_run": "2026-02-26 15:00"
     },
     {
       "name": "supervisor",
       "active": true,
-      "last_run": "2026-02-26 09:30"
+      "last_run": "2026-02-27 00:01"
     },
     {
       "name": "agent-manager",
       "active": true,
-      "last_run": "2026-02-26 08:09"
+      "last_run": "2026-02-26 23:30"
     },
     {
       "name": "meta-agent",
-      "active": false,
-      "last_run": "2026-02-26 05:16"
+      "active": true,
+      "last_run": "2026-02-27 00:06"
     }
   ],
   "research": {
-    "total": 193,
-    "tts_coverage": "100%",
-    "latest": "2026-02-26-edge-ai-tinyml-2026\nnone",
+    "total": 194,
+    "tts_coverage": "99%",
+    "latest": "INDEX\nnone",
     "hub_deployed": true
   },
   "recent_commits": [
     {
+      "agent": "chore",
+      "message": "enhance dashboard data generator — add disk_history and logs arrays for new UI features",
+      "time": ""
+    },
+    {
       "agent": "content",
-      "message": "LinkedIn PA implementation-decoder analyst‑report for 2026-02-26 0917 (v10 dynamic)",
+      "message": "LinkedIn PA market-positioning analyst‑report for 2026-02-27 0008 (v10 dynamic)",
+      "time": ""
+    },
+    {
+      "agent": "research",
+      "message": "Spring 2026 anime season trends — lineup, streaming, highlights",
+      "time": ""
+    },
+    {
+      "agent": "content",
+      "message": "Update daily digest 2026-02-26 (agent run)",
       "time": ""
     },
     {
       "agent": "build",
-      "message": "log workspace-builder session 20260226-0910 (push commits, cleanup branches, enforce constraints)",
+      "message": "auto-commit from agent-manager (2026-02-26)",
+      "time": ""
+    },
+    {
+      "agent": "content",
+      "message": "LinkedIn PA developer-tips analyst‑report for 2026-02-26 2309 (v10 dynamic)",
       "time": ""
     },
     {
       "agent": "build",
-      "message": "enforce constraints - push commits, cleanup branches, update active-tasks, document session (20260226-0910)",
-      "time": ""
-    },
-    {
-      "agent": "content",
-      "message": "Update daily digest 2026-02-26",
-      "time": ""
-    },
-    {
-      "agent": "dev",
-      "message": "Add heartbeat-state command to view last heartbeat checks",
-      "time": ""
-    },
-    {
-      "agent": "content",
-      "message": "LinkedIn PA comparative-analysis analyst‑report for 2026-02-26 0812 (v10 dynamic)",
-      "time": ""
-    },
-    {
-      "agent": "content",
-      "message": "Update daily digest 2026-02-26",
-      "time": ""
-    },
-    {
-      "agent": "dev",
-      "message": "Fix LinkedIn PA agent timestamp arithmetic for 08/09 hour edge case",
-      "time": ""
-    },
-    {
-      "agent": "content",
-      "message": "LinkedIn PA technical-performance analyst‑report for 2026-02-26 0716 (v10 dynamic)",
+      "message": "mark workspace-builder session validated (2026-02-26 23:00 UTC)",
       "time": ""
     },
     {
       "agent": "build",
-      "message": "finalize progress.md with outcome and commit references",
+      "message": "workspace-builder session 20260226-2300 - commit dashboard updates, content index regeneration, add .gitignore, create planning docs",
+      "time": ""
+    },
+    {
+      "agent": "content",
+      "message": "LinkedIn PA roadmap-brief analyst‑report for 2026-02-26 2203 (v10 dynamic)",
+      "time": ""
+    },
+    {
+      "agent": "build",
+      "message": "auto-commit from agent-manager (2026-02-26)",
       "time": ""
     }
+  ],
+  "logs": [
+    "2026-02-26 19:08:49 UTC - Snapshot: disk=71%, apt=0, content_today=39, research_today=2",
+    "2026-02-26 19:08:58 UTC - Agent performance learning (disabled in this version - Voyage AI rate limited)",
+    "2026-02-26 19:08:58 UTC - Agent performance learning (disabled in this version - Voyage AI rate limited)",
+    "2026-02-26 19:08:58 UTC - Meta-Agent one-shot completed; actions: none",
+    "2026-02-26 19:08:58 UTC - Meta-Agent one-shot completed; actions: none",
+    "2026-02-26 23:06:11 UTC - Meta-Agent starting (one-shot)",
+    "2026-02-26 23:06:11 UTC - Meta-Agent starting (one-shot)",
+    "2026-02-26 23:06:12 UTC - Snapshot: disk=72%, apt=0, content_today=47, research_today=2",
+    "2026-02-26 23:06:12 UTC - Snapshot: disk=72%, apt=0, content_today=47, research_today=2",
+    "2026-02-26 23:06:22 UTC - Agent performance learning (disabled in this version - Voyage AI rate limited)",
+    "2026-02-26 23:06:22 UTC - Agent performance learning (disabled in this version - Voyage AI rate limited)",
+    "2026-02-26 23:06:22 UTC - Meta-Agent one-shot completed; actions: none",
+    "2026-02-26 23:06:22 UTC - Meta-Agent one-shot completed; actions: none",
+    "2026-02-27 00:02:34 UTC - Meta-Agent starting (one-shot)",
+    "2026-02-27 00:02:35 UTC - Snapshot: disk=72%, apt=0, content_today=0, research_today=0",
+    "2026-02-27 00:02:36 UTC - No content for today; will spawn",
+    "2026-02-27 00:02:36 UTC - No research for today; will spawn",
+    "2026-02-27 00:02:45 UTC - Spawning content-agent",
+    "I’ll check for pending content tasks and generate today’s daily digest.",
+    "There’s a daily digest already; I’ll regenerate it to include today’s latest LinkedIn PA posts and update the index:",
+    "Now I’ll update the content index and commit:",
+    "✅ **Daily digest updated and committed**",
+    "",
+    "- `content/2026-02-26-daily-digest.md` refreshed with 23 LinkedIn PA posts, research highlights, system metrics, and tomorrow’s plans",
+    "- `content/INDEX.md` regenerated (426 content files tracked)",
+    "- Commit: `b2bc74e7`",
+    "",
+    "**Pending:** `apps/dashboard/data.json` and `vercel.json` modified but not committed (likely from earlier PWA work). Those will be handled by workspace‑builder or next maintenance run.  ",
+    "",
+    "All caught up! (◕‿◕)♡",
+    "2026-02-27 00:03:40 UTC - Spawning research-agent",
+    "Checking for pending research tasks…",
+    "I see there’s a pending research direction from meta-agent logs: “Spring 2026 anime trends” (mentioned in daily logs). I’ll conduct fresh research on **Spring 2026 anime season trends** and create a detailed report. Let’s gather web sources:",
+    "Now I’ll create a detailed research report on **Spring 2026 Anime Season Trends**:",
+    "Now I’ll update the research INDEX and commit:",
+    "**🟢 Heartbeat Check (00:03 UTC / 07:03 ICT, Feb 27)**",
+    "",
+    "✅ Gateway healthy  ",
+    "💾 Disk 72% (healthy)  ",
+    "✅ Updates: none pending  ",
+    "⚠️ Git: 3 modified files (data.json, vercel.json, memory/meta-agent-state.json) – expected background activity; workspace-builder will commit at next run  ",
+    "🧠 Memory: local FTS+ (reindex 2.8d ago)  ",
+    "⬇️ Downloads: 17 files, 5.7 GB  ",
+    "🤖 Agents: validated (meta-supervisor running; workspace-builder last run 23:00; LinkedIn PA active; enhancement‑bot deployed)  ",
+    "⚡ Research completed: “Spring 2026 anime season trends” — report generated and committed (ae03e10d)  ",
+    "⚠️ **Attention needed:** PWA dashboard project is **private** on Vercel → 401/404. Please set visibility to **Public** in Vercel dashboard (Settings → General → Project Visibility) for `openclaw-dashboard`. Once public, install button will work at the alias URL.",
+    "",
+    "All systems operational. HEARTBEAT_OK",
+    "2026-02-27 00:06:39 UTC - Agent performance learning (disabled in this version - Voyage AI rate limited)",
+    "2026-02-27 00:06:40 UTC - Meta-Agent one-shot completed; actions: spawn content-agent spawn research-agent"
   ]
 }
