@@ -344,9 +344,15 @@
     const clearChatBtn = document.getElementById('clearChat');
 
     function loadChat() {
-      const raw = localStorage.getItem(CHAT_STORAGE_KEY);
-      const messages = raw ? JSON.parse(raw) : [];
-      renderChat(messages);
+      try {
+        const raw = localStorage.getItem(CHAT_STORAGE_KEY);
+        const messages = raw ? JSON.parse(raw) : [];
+        renderChat(messages);
+      } catch (e) {
+        console.error('Chat load error:', e);
+        localStorage.removeItem(CHAT_STORAGE_KEY);
+        renderChat([]);
+      }
     }
 
     function saveChat(messages) {
